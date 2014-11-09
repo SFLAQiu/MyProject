@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "Helper\Helper.csproj", "{594B711A-13CE-4D50-9538-B7440A76768E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLogic", "CoreLogic\CoreLogic.csproj", "{A5B2BEC6-F31A-4BFF-99CE-17CDBA398219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{BAF807E6-4F71-4B3D-899C-B1BC3651A6D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{594B711A-13CE-4D50-9538-B7440A76768E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{594B711A-13CE-4D50-9538-B7440A76768E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{594B711A-13CE-4D50-9538-B7440A76768E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{594B711A-13CE-4D50-9538-B7440A76768E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5B2BEC6-F31A-4BFF-99CE-17CDBA398219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B2BEC6-F31A-4BFF-99CE-17CDBA398219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B2BEC6-F31A-4BFF-99CE-17CDBA398219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B2BEC6-F31A-4BFF-99CE-17CDBA398219}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAF807E6-4F71-4B3D-899C-B1BC3651A6D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAF807E6-4F71-4B3D-899C-B1BC3651A6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAF807E6-4F71-4B3D-899C-B1BC3651A6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAF807E6-4F71-4B3D-899C-B1BC3651A6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

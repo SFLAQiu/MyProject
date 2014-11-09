@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+url地址：<input type="text" name="url" />
+<input id="handerBtn" type="button"  value="提交"/>
+<div id="imgBox">
+
+</div>
+@section bodyFoot{
+<script type="text/javascript">
+    $("#handerBtn").click(function () {
+        $("#imgBox").html();
+        var url = $("input[name='url']").val();
+        $.post("/ajax/GetImgs/?action=detail", { "url": url }, function (json) {
+            console.log(json);
+            switch (json.Code) {
+                case "100": {
+                    for (var i = 0; i <json.Datas.length;i++) {
+                        $("#imgBox").append("<img src='" + json.Datas[i] + "'/></br>");
+                    }
+                }; return;
+                default: alert(json.Msg);
+            }
+        });
+    });
+
+</script>        
+}
