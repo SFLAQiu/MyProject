@@ -33,20 +33,26 @@ namespace CoreLogic {
         public override string GetSavePath(object appendAssist) {
             string id = string.Empty;
             if (appendAssist != null) id = (string)appendAssist;
+            if (!DoCeck()) return string.Empty;
             string action=HttpContext.Current.Request.GetQ("action");
+            string pos = HttpContext.Current.Request.GetQ("pos");
+            pos = pos.IsNullOrWhiteSpace() ? "imgs" : pos;
             string type = "taobao";
             if(action.IsNullOrWhiteSpace())return string.Empty;
-            var savePathStyle=HttpContext.Current.Server.MapPath("~/"+CommonConfig.SaveTaoBaoPathConfig.FormatStr(type,action,id));
+            var savePathStyle = HttpContext.Current.Server.MapPath("~/" + CommonConfig.SaveTaoBaoPathConfig.FormatStr(type, action, id, pos));
             return savePathStyle;
         }
 
         public override string GetUrl(object appendAssist) {
             string id = string.Empty;
             if (appendAssist != null) id = (string)appendAssist;
+            if (!DoCeck()) return string.Empty;
             string action=HttpContext.Current.Request.GetQ("action");
+            string pos = HttpContext.Current.Request.GetQ("pos");
+            pos = pos.IsNullOrWhiteSpace() ? "imgs" : pos;
             string type = "taobao";
             if(action.IsNullOrWhiteSpace())return string.Empty;
-            var savePathStyle = CommonConfig.TaoBaoUrlConfig.FormatStr(type, action, id);
+            var savePathStyle = CommonConfig.TaoBaoUrlConfig.FormatStr(type, action, id, pos);
             return savePathStyle;
         }
         /// <summary>
@@ -108,6 +114,20 @@ namespace CoreLogic {
                 datas.Add(groups[1].Value);
             }
             return datas;
+        }
+        /// <summary>
+        /// 校验是否合法参数
+        /// </summary>
+        /// <returns></returns>
+        private bool DoCeck() {
+            //合法action
+            string[] legalAction = { "detail", "info" };
+            //合法pos
+            string[] legalPos = { "imgs", "pack" };
+            string action = HttpContext.Current.Request.GetQ("action").ToLower();
+            string pos = HttpContext.Current.Request.GetQ("pos").ToLower();
+            if (legalAction.Contains(action) && (pos.IsNullOrWhiteSpace() || legalPos.Contains(pos))) return true;
+            return false;
         }
 
       

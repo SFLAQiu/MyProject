@@ -223,11 +223,6 @@
             </summary> 
             <returns></returns> 
         </member>
-        <member name="P:LG.Utility.ExcelHelper.MaxRecords">
-            <summary> 
-            限制输出到 Excel 的最大记录数。超出则抛出异常 
-            </summary> 
-        </member>
         <member name="P:LG.Utility.ExcelHelper.FileName">
             <summary> 
             输出到浏览器的 Excel 文件名 
@@ -502,6 +497,23 @@
             <param name="PageIndex">当前页码</param>
             <returns></returns>
         </member>
+        <member name="T:LG.Utility.NameValue`2">
+            <summary>
+            名值对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="N"></typeparam>
+        </member>
+        <member name="P:LG.Utility.NameValue`2.Key">
+            <summary>
+            名
+            </summary>
+        </member>
+        <member name="P:LG.Utility.NameValue`2.Value">
+            <summary>
+            值
+            </summary>
+        </member>
         <member name="M:LG.Utility.ObjectExtend.GetInt(System.Object,System.Int32,System.Boolean)">
             <summary>
             从对象中转为int32数据
@@ -578,6 +590,12 @@
             <typeparam name="T"></typeparam>
             <param name="datas">集合</param>
             <param name="separator">符号</param>
+            <returns></returns>
+        </member>
+        <member name="M:LG.Utility.PublicExtend.GetRandSeed">
+            <summary>
+            获取随机种子码
+            </summary>
             <returns></returns>
         </member>
         <member name="M:LG.Utility.RequestExtend.GetQ(System.Web.HttpRequest,System.String)">
@@ -978,6 +996,18 @@
             </summary>
             <param name="key"></param>
         </member>
+        <member name="T:LG.Utility.StreamExtend">
+            <summary>
+            流拓展
+            </summary>
+        </member>
+        <member name="M:LG.Utility.StreamExtend.WriteStream(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            把另一个流里的数据写到当前流的当前位置后,不会去打开/关闭当前流,也不会去打开/关闭另一个流
+            </summary>
+            <param name="stream"></param>
+            <param name="sourceStream"></param>
+        </member>
         <member name="M:LG.Utility.StringExtend.To``1(System.String,``0)">
             <summary>
             string 类型转为其他值类型
@@ -1180,6 +1210,14 @@
             <param name="dt"></param>
             <returns></returns>
         </member>
+        <member name="M:LG.Utility.ModelExtend.GetModels``1(System.Data.DataSet)">
+            <summary>
+            更具DataTable 对象，绑定DataTable表所有行值绑定到实体类属性值集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
         <member name="T:LG.Utility.MyUpYun">
             <summary>
             又拍去上传帮助类
@@ -1200,6 +1238,13 @@
             <param name="location">位置（如：/a/b/c.jpg）</param>
         </member>
         <member name="M:LG.Utility.MyUpYun.ReloadloadIamge(System.String,System.String@)">
+            <summary>
+            缓存刷新
+            </summary>
+            <param name="imageUrl">每个url都必须以为http开头，否则不会加入刷新队列</param>
+            <param name="location">位置（如：/a/b/c.jpg）</param>
+        </member>
+        <member name="M:LG.Utility.MyUpYun.ReloadloadIamgeV2(System.String,System.String@)">
             <summary>
             缓存刷新
             </summary>
@@ -1231,7 +1276,17 @@
             <param name="url">所要刷新的文件的url</param>
             <param name="request"></param>
         </member>
-        <member name="M:LG.Utility.UpYun.reloadFileWorker(System.String,System.String,System.Collections.Hashtable,System.String@)">
+        <member name="M:LG.Utility.UpYun.reloadFileWorkerV2(System.String,System.String,System.Collections.Hashtable,System.String@)">
+            <summary>
+            用于刷新缓存
+            </summary>
+            <param name="method"></param>
+            <param name="Url">要刷新缓存的url（每个url都必须以为http开头，否则不会加入刷新队列）</param>
+            <param name="postData"></param>
+            <param name="headers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LG.Utility.UpYun.reloadFileWorker(System.String,System.String,System.Collections.Hashtable,System.String@,System.Int32)">
             <summary>
             用于刷新缓存
             </summary>
@@ -1347,6 +1402,63 @@
             <param name="filePath">文件路径</param>
             <param name="encoding">编码方式</param>
             <returns>反序列化得到的对象</returns>
+        </member>
+        <member name="T:LG.Utility.ZipHelper">
+            <summary>
+            Zip压缩与解压缩 
+            </summary>
+        </member>
+        <member name="M:LG.Utility.ZipHelper.ZipFile(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            压缩单个文件
+            </summary>
+            <param name="fileToZip">要压缩的文件</param>
+            <param name="zipedFile">压缩后的文件</param>
+            <param name="compressionLevel">压缩等级</param>
+            <param name="blockSize">每次写入大小</param>
+        </member>
+        <member name="M:LG.Utility.ZipHelper.ZipFile(System.String,System.String)">
+            <summary>
+            压缩单个文件
+            </summary>
+            <param name="fileToZip">要进行压缩的文件名</param>
+            <param name="zipedFile">压缩后生成的压缩文件名</param>
+        </member>
+        <member name="M:LG.Utility.ZipHelper.ZipFileDirectory(System.String,System.String)">
+            <summary>
+            压缩多层目录
+            </summary>
+            <param name="strDirectory">The directory.</param>
+            <param name="zipedFile">The ziped file.</param>
+        </member>
+        <member name="M:LG.Utility.ZipHelper.ZipSetp(System.String,ICSharpCode.SharpZipLib.Zip.ZipOutputStream,System.String)">
+            <summary>
+            递归遍历目录
+            </summary>
+            <param name="strDirectory">The directory.</param>
+            <param name="s">The ZipOutputStream Object.</param>
+            <param name="parentPath">The parent path.</param>
+        </member>
+        <member name="M:LG.Utility.ZipHelper.UnZip(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            解压缩一个 zip 文件。
+            </summary>
+            <param name="zipedFile">The ziped file.</param>
+            <param name="strDirectory">The STR directory.</param>
+            <param name="password">zip 文件的密码。</param>
+            <param name="overWrite">是否覆盖已存在的文件。</param>
+        </member>
+        <member name="M:LG.Utility.ZipHelper.CommpressDir(System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            目录压缩
+            </summary>
+            <param name="compressedFilePath">压缩包文件输出路径</param>
+            <param name="dirPath">目录路径</param>
+            <param name="includeDir">是否包含传入的目录一起压缩,false则只压缩目录里的内容</param>
+            <param name="appendCompressed">是否追加压缩,需要压缩包文件已经存在</param>
+            <returns></returns>
+            <exception cref="T:System.Exception">要压缩的文件不存在</exception>
+            <exception cref="T:System.Exception">压缩异常</exception>
         </member>
     </members>
 </doc>

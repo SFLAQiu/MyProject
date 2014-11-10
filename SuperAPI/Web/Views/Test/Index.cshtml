@@ -7,6 +7,7 @@
 
 url地址：<input type="text" name="url" />
 <input id="handerBtn" type="button"  value="提交"/>
+<input id="downBtn" type="button"  value="下载"/>
 <div id="imgBox">
 
 </div>
@@ -25,6 +26,21 @@ url地址：<input type="text" name="url" />
                 }; return;
                 default: alert(json.Msg);
             }
+        });
+    });
+
+    $("#downBtn").click(function () {
+        var url = $("input[name='url']").val();
+        //var imgBoxJq = $("#imgBox img");
+        var imgs = "3.jpg,4.jpg,5.jpg";
+        //var j = 0;
+        //for (var i = 0; i < imgBoxJq.length; i++) {
+        //    var item = imgBoxJq.eq(i);
+        //    imgs += item.attr("sr");
+        //}
+        $.post("/ajax/DownLoadImgs/?action=detail", { "url": url, "imgs": imgs }, function (json) {
+            console.log(json);
+            alert(json.Code);
         });
     });
 
