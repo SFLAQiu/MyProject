@@ -30,31 +30,13 @@ namespace Web.Controllers {
           
             //获取商品对应的保存地址
             var savePath = hander.GetSavePath(values["idStr"]);
-            if (savePath.IsNullOrWhiteSpace()) return WriteJson(new {
-                Code = "101",
-                Msg = "无法解析商品图片保存地址！"
-            });
-            //获取保存地址的下载图片是否存在，如果存在就不再进行下载
-            var rtnImgDatas = GetImgsByPath(savePath, hander.GetUrl(values["idStr"]));
-            if (rtnImgDatas != null && rtnImgDatas.Count > 0) return WriteJson(new {
-                Code = "100",
-                Msg = "Bingo",
-                Datas = rtnImgDatas
-            });
+            var urlPre=hander.GetUrl(values["idStr"]);
             string msg;
-            var datas = hander.GetImgs(values["url"], out msg);
-            if (datas == null || datas.Count <= 0) return WriteJson(new {
+            var rtnImgDatas = GetImgSelfUrls(values["url"], savePath, urlPre, hander, out msg);
+            if (rtnImgDatas == null || rtnImgDatas.Count<=0) return WriteJson(new {
                 Code = "101",
-                Msg = "无法匹配地址的图片！！"
+                Msg = msg
             });
-            var i = 1;
-            foreach (var imgUrl in datas) {
-                StaticFunctions.SaveFile(imgUrl, savePath, i.ToString());
-                i++;
-            }
-
-            rtnImgDatas = GetImgsByPath(savePath, hander.GetUrl(values["idStr"]));
-
             return WriteJson(new {
                 Code = "100",
                 Msg = "Bingo",
@@ -169,8 +151,88 @@ namespace Web.Controllers {
             });
         }
 
+        public ActionResult CreateVideo() {
+
+            //校验并获取域名对应的操作对象
+            HostDo hander;
+            Dictionary<string, string> values;
+            var checkMsg = DoCheck(out hander, out values);
+            if (checkMsg != null || hander == null) return checkMsg;
+            var savePath=hander.GetSavePath(values["idStr"]);
+            var urlPre = hander.GetUrl(values["idStr"]);
+            string msg;
+
+            if (!Directory.Exists(savePath)) return WriteJson(new {
+                Code = "101",
+                Msg = "不存在商品图片路径！"
+            });
+            var files = Directory.GetFiles(savePath);
+            if (files.Count() <= 0) return WriteJson(new {
+                Code = "101",
+                Msg = "不存在商品图图片！"
+            });
+            List<string> lis = new List<string>();
+            foreach (var item in files) {
+                var i = 0;
+                do {
+                    i++;
+                    lis.Add(item);
+                } while (i < 6);
+            }
+         
+            var videoSavePath = Request.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd")));
+            if (!Directory.Exists(videoSavePath)) Directory.CreateDirectory(videoSavePath);
+            var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".avi";
+            var videlFilePath = videoSavePath + fileName;
+            var videoDownUrl = CommonConfig.VideoDownUrlPre.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd"));
+            AVIWriter aviWriter = new AVIWriter();
+            //ps:avi中所有图像皆不能小于width及height
+            Bitmap avi_frame = aviWriter.Create(videlFilePath, 1, 500, 500);
+            //获得指定目录下文件列表的list
+            foreach (string filename in lis) {
+                //获得图像
+                Bitmap cache = new Bitmap(filename);
+                //由于转化为avi后呈现相反，所以翻转
+                cache.RotateFlip(RotateFlipType.Rotate180FlipX);
+                //载入图像
+                aviWriter.LoadFrame(cache);
+                aviWriter.AddFrame();
+            }
+            //释放资源
+            aviWriter.Close();
+            avi_frame.Dispose();
+            return WriteJson(new {
+                Code = "100",
+                Msg = "Bingo！",
+                DownUrl=videoDownUrl
+            });
+        }
+         
 
         #region "辅助"
+        /// <summary>
+        /// 获取图片url地址集合
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="savePath"></param>
+        /// <param name="urlPre"></param>
+        /// <param name="hander"></param>
+        /// <returns></returns>
+        private List<string> GetImgSelfUrls(string url,string savePath,string urlPre, HostDo hander,out string msg) {
+            msg = string.Empty;
+            //获取保存地址的下载图片是否存在，如果存在就不再进行下载
+            var rtnImgDatas = GetImgsByPath(savePath, urlPre);
+            if (rtnImgDatas != null && rtnImgDatas.Count > 0) return rtnImgDatas;
+            var datas = hander.GetImgs(url, out msg);
+            if (datas == null || datas.Count <= 0) return null;
+            var i = 1;
+            foreach (var imgUrl in datas) {
+                StaticFunctions.SaveFile(imgUrl, savePath, i.ToString());
+                i++;
+            }
+            rtnImgDatas = GetImgsByPath(savePath, urlPre);
+            return rtnImgDatas;
+        }
         /// <summary>
         /// 通过路径，获取路径下所有图片的url集合
         /// </summary>

@@ -10,6 +10,7 @@ url地址：<input type="text" name="url" />
 <input id="infoBtn" type="button"  value="获取图片"/>
 <input id="downBtn" type="button"  value="下载详情图片"/>
 <input id="SynthesisBtn" type="button"  value="合成图片测试"/>
+<input id="CreateVideo" type="button"  value="生成视频"/>
 <div id="imgBox">
 
 </div>
@@ -67,6 +68,14 @@ url地址：<input type="text" name="url" />
         var imgs = "2.jpg";
         var sImg = "1.png";
         $.post("/ajax/SynthesisImg/?action=info", { "url": url, "bImg": imgs, "sImg": sImg ,"x":120,"y":100}, function (json) {
+            console.log(json);
+            alert(json.Code);
+        });
+    });
+
+    $("#CreateVideo").click(function () {
+        var url = $("input[name='url']").val();
+        $.post("/ajax/CreateVideo/?action=info", { "url": url }, function (json) {
             console.log(json);
             alert(json.Code);
         });

@@ -33,5 +33,13 @@ namespace Helper {
         /// 商品详情合成图片URL地址
         /// </summary>
         public const string SynthesisImgDownUrlPre = "/Home/DownSynthesisImg/?img={0}";
+        /// <summary>
+        /// 视频保存地址
+        /// </summary>
+        public const string VideoSavePath = "ItemImg\\Video\\{0}\\";
+        /// <summary>
+        /// 视频下载地址
+        /// </summary>
+        public const string VideoDownUrlPre = "/ItemImg/Video/{0}/";
     }
 }

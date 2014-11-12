@@ -28,8 +28,8 @@ namespace CoreLogic {
                 return null;
             }
             switch (action) {
-                case "detail": return DetailHander(url);//详情图片
-                case "info": return InfoHander(url);//详情图片
+                case "detail": return DetailHander(url,out msg);//详情图片
+                case "info": return InfoHander(url,out msg);//详情图片
             }
             msg = "What Are You Do？";
             return null;
@@ -70,16 +70,26 @@ namespace CoreLogic {
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public List<string> DetailHander(string url) {
+        public List<string> DetailHander(string url,out string msg) {
             //获取请求结果字符串
+            msg = string.Empty;
             var resultStr = CommonHelper.DoGetRequest(url);
-            if(resultStr.IsNullOrWhiteSpace())return null;
-            //获取详细信息数据URL
+            if (resultStr.IsNullOrWhiteSpace()) {
+                msg = "获取商品HTML失败！";
+                return null;
+            }
+            //获取商品详细信息接口URL地址
             var descURL = GetDescDetailURL(resultStr);
-            if (descURL.IsNullOrWhiteSpace()) return null;
-            //请求详情url获取详情数据字符串
+            if (descURL.IsNullOrWhiteSpace()) {
+                msg = "获取商品HTML为空！";
+                return null;
+            }
+            //请求商品详细信息接口获取字符串
             var resultDescStr=CommonHelper.DoGetRequest(descURL);
-            if(resultDescStr.IsNullOrWhiteSpace())return null;
+            if (resultDescStr.IsNullOrWhiteSpace()) {
+                msg = "获取商品详情数据接口数据字符串为空！";
+                return null;
+            }
             //根据详情数据字符串，获取图片集合
             var imgUrls=GetImgsByDetialStr(resultDescStr);
             return imgUrls;
@@ -127,20 +137,30 @@ namespace CoreLogic {
         }
         #endregion
         #region "商品主信息"
-        public List<string> InfoHander(string url) {
+        public List<string> InfoHander(string url,out string msg) {
+            msg = string.Empty;
             //<ul[\s]+id="J_UlThumb"[^>]*>.+?</ul>
             //<a href="#"><img data-src="([^"]*)"[^>]*>
             //获取请求结果字符串
             var resultStr = CommonHelper.DoGetRequest(url);
-            if (resultStr.IsNullOrWhiteSpace()) return null;
+            if (resultStr.IsNullOrWhiteSpace()) {
+                msg = "获取商品HTML为空！";
+                return null;
+            }
             var match=new Regex(@"<ul[^>]*id=""J_UlThumb""[^>]*>.+?</ul>",RegexOptions.Singleline).Match(resultStr);
-            if (match == null || match.Length <= 0) return null;
+            if (match == null || match.Length <= 0) {
+                msg = @"解析商品HTML ul id=""J_UlThumb"" 标签字符串失败！";
+                return null;
+            }
             var imgsHTML = match.Groups[0].Value;
             string[] ImgRegexs = { @"<a[^>]*href=""#""[^>]*><img[^>]*src=""([^""]*)""[^>]*>", @"<a[^>]*href=""#""[^>]*><img[^>]*data-src=""([^""]*)""[^>]*>" };
             var datas = new List<string>();
             foreach (var item in ImgRegexs) {
                 var imgMatchs = new Regex(item, RegexOptions.Singleline).Matches(imgsHTML);
-                if (imgMatchs == null || imgMatchs.Count <= 0) return null;
+                if (imgMatchs == null || imgMatchs.Count <= 0) {
+                    msg = "解析img标签集合为空！";
+                    return null;
+                }
                 for (int i = 0; i < imgMatchs.Count; i++) {
                     var matchItem = imgMatchs[i];
                     if (matchItem == null) continue;
