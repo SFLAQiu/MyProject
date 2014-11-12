@@ -10,7 +10,7 @@ namespace CoreLogic {
         /// </summary>
         /// <param name="appendAssist"></param>
         /// <returns></returns>
-        public abstract List<string> GetImgs(string url, object appendAssist = null);
+        public abstract List<string> GetImgs(string url,out string msg);
         /// <summary>
         /// 获取保存路径地址
         /// </summary>

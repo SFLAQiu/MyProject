@@ -6,23 +6,23 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>F:\Web\www.yyq.com\</_PublishTargetUrl>
+    <_PublishTargetUrl>F:\Web\www.yyq.com</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/CoreLogic.dll">
-      <publishTime>11/10/2014 18:04:13</publishTime>
+      <publishTime>11/12/2014 11:50:45</publishTime>
     </File>
     <File Include="bin/CoreLogic.pdb">
-      <publishTime>11/10/2014 18:04:13</publishTime>
+      <publishTime>11/12/2014 11:04:23</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>11/08/2014 12:24:24</publishTime>
     </File>
     <File Include="bin/Helper.dll">
-      <publishTime>11/10/2014 18:04:13</publishTime>
+      <publishTime>11/12/2014 10:52:19</publishTime>
     </File>
     <File Include="bin/Helper.pdb">
-      <publishTime>11/10/2014 18:04:13</publishTime>
+      <publishTime>11/12/2014 11:04:23</publishTime>
     </File>
     <File Include="bin/ICSharpCode.SharpZipLib.dll">
       <publishTime>05/25/2010 12:55:22</publishTime>
@@ -58,10 +58,10 @@
       <publishTime>01/05/2011 15:45:38</publishTime>
     </File>
     <File Include="bin/Web.dll">
-      <publishTime>11/10/2014 18:04:14</publishTime>
+      <publishTime>11/12/2014 11:50:45</publishTime>
     </File>
     <File Include="bin/Web.pdb">
-      <publishTime>11/10/2014 18:04:14</publishTime>
+      <publishTime>11/12/2014 11:09:34</publishTime>
     </File>
     <File Include="bin/zh-Hans/EntityFramework.resources.dll">
       <publishTime>11/08/2014 12:24:31</publishTime>
@@ -88,37 +88,43 @@
       <publishTime>01/10/2011 11:11:30</publishTime>
     </File>
     <File Include="Content/JS/jquery.1.9.1.min.js">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
     </File>
     <File Include="Content/Site.css">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
+    </File>
+    <File Include="Content/SynthesisImg/1.png">
+      <publishTime>11/11/2014 18:16:59</publishTime>
     </File>
     <File Include="Global.asax">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
+    </File>
+    <File Include="JS/jquery.1.9.1.min.js">
+      <publishTime>11/10/2014 22:40:45</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
     </File>
     <File Include="Views/Ajax/Index.cshtml">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 22:49:23</publishTime>
     </File>
     <File Include="Views/Test/Index.cshtml">
-      <publishTime>11/10/2014 17:47:14</publishTime>
+      <publishTime>11/11/2014 18:27:15</publishTime>
     </File>
     <File Include="Views/Web.config">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
     </File>
     <File Include="Views/_ViewStart.cshtml">
-      <publishTime>11/10/2014 09:53:49</publishTime>
+      <publishTime>11/10/2014 18:23:35</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>11/10/2014 18:04:16</publishTime>
+      <publishTime>11/10/2014 22:36:36</publishTime>
     </File>
   </ItemGroup>
 </Project>

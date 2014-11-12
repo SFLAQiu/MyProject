@@ -6,15 +6,33 @@
 <h2>Index</h2>
 
 url地址：<input type="text" name="url" />
-<input id="handerBtn" type="button"  value="提交"/>
-<input id="downBtn" type="button"  value="下载"/>
+<input id="handerBtn" type="button"  value="获取详细图片"/>
+<input id="infoBtn" type="button"  value="获取图片"/>
+<input id="downBtn" type="button"  value="下载详情图片"/>
+<input id="SynthesisBtn" type="button"  value="合成图片测试"/>
 <div id="imgBox">
 
 </div>
 @section bodyFoot{
 <script type="text/javascript">
+
+    $("#infoBtn").click(function () {
+        $("#imgBox").html("");
+        var url = $("input[name='url']").val();
+        $.post("/ajax/GetImgs/?action=info", { "url": url }, function (json) {
+            console.log(json);
+            switch (json.Code) {
+                case "100": {
+                    for (var i = 0; i < json.Datas.length; i++) {
+                        $("#imgBox").append("<img src='" + json.Datas[i] + "'/></br>");
+                    }
+                }; return;
+                default: alert(json.Msg);
+            }
+        });
+    });
     $("#handerBtn").click(function () {
-        $("#imgBox").html();
+        $("#imgBox").html("");
         var url = $("input[name='url']").val();
         $.post("/ajax/GetImgs/?action=detail", { "url": url }, function (json) {
             console.log(json);
@@ -39,6 +57,16 @@ url地址：<input type="text" name="url" />
         //    imgs += item.attr("sr");
         //}
         $.post("/ajax/DownLoadImgs/?action=detail", { "url": url, "imgs": imgs }, function (json) {
+            console.log(json);
+            alert(json.Code);
+        });
+    });
+
+    $("#SynthesisBtn").click(function () {
+        var url = $("input[name='url']").val();
+        var imgs = "2.jpg";
+        var sImg = "1.png";
+        $.post("/ajax/SynthesisImg/?action=info", { "url": url, "bImg": imgs, "sImg": sImg ,"x":120,"y":100}, function (json) {
             console.log(json);
             alert(json.Code);
         });

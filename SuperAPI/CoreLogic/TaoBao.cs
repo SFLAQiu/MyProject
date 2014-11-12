@@ -16,13 +16,22 @@ namespace CoreLogic {
         /// </summary>
         /// <param name="appendAssist"></param>
         /// <returns></returns>
-        public override List<string> GetImgs(string url, object appendAssist = null) {
-            if (url.IsNullOrWhiteSpace()) return null;
-            string handerType = "";
-            if (appendAssist != null) handerType = (string)appendAssist;
-            switch (handerType) {
-                case "detail": return DetailHander(url);//详情图片
+        public override List<string> GetImgs(string url,out string msg) {
+            msg = string.Empty;
+            var action = HttpContext.Current.Request.GetQ("action");
+            if (action.IsNullOrWhiteSpace()) {
+                msg = "action参数不能为空！";
+                return null;
             }
+            if (url.IsNullOrWhiteSpace()) {
+                msg = "url参数不能为空！";
+                return null;
+            }
+            switch (action) {
+                case "detail": return DetailHander(url);//详情图片
+                case "info": return InfoHander(url);//详情图片
+            }
+            msg = "What Are You Do？";
             return null;
         }
         /// <summary>
@@ -55,6 +64,7 @@ namespace CoreLogic {
             var savePathStyle = CommonConfig.TaoBaoUrlConfig.FormatStr(type, action, id, pos);
             return savePathStyle;
         }
+        #region "获取详情"
         /// <summary>
         /// 获取详情图片
         /// </summary>
@@ -103,7 +113,7 @@ namespace CoreLogic {
         private List<string> GetImgsByDetialStr(string detailRequestStr) {
             var datas = new List<string>();
             if (detailRequestStr.IsNullOrWhiteSpace()) return null;
-            Regex regex = new Regex(@"<img[^>]*src=""([^""]*)"">");
+            Regex regex = new Regex(@"<img[^>]*src=""([^""]*)""[^>]*>");
             var matchs = regex.Matches(detailRequestStr);
             if (matchs == null && matchs.Count<=0) return null;
             for (int i = 0; i < matchs.Count; i++) {
@@ -115,6 +125,35 @@ namespace CoreLogic {
             }
             return datas;
         }
+        #endregion
+        #region "商品主信息"
+        public List<string> InfoHander(string url) {
+            //<ul[\s]+id="J_UlThumb"[^>]*>.+?</ul>
+            //<a href="#"><img data-src="([^"]*)"[^>]*>
+            //获取请求结果字符串
+            var resultStr = CommonHelper.DoGetRequest(url);
+            if (resultStr.IsNullOrWhiteSpace()) return null;
+            var match=new Regex(@"<ul[^>]*id=""J_UlThumb""[^>]*>.+?</ul>",RegexOptions.Singleline).Match(resultStr);
+            if (match == null || match.Length <= 0) return null;
+            var imgsHTML = match.Groups[0].Value;
+            string[] ImgRegexs = { @"<a[^>]*href=""#""[^>]*><img[^>]*src=""([^""]*)""[^>]*>", @"<a[^>]*href=""#""[^>]*><img[^>]*data-src=""([^""]*)""[^>]*>" };
+            var datas = new List<string>();
+            foreach (var item in ImgRegexs) {
+                var imgMatchs = new Regex(item, RegexOptions.Singleline).Matches(imgsHTML);
+                if (imgMatchs == null || imgMatchs.Count <= 0) return null;
+                for (int i = 0; i < imgMatchs.Count; i++) {
+                    var matchItem = imgMatchs[i];
+                    if (matchItem == null) continue;
+                    var groups = matchItem.Groups;
+                    if (groups == null || groups.Count < 2) continue;
+                    var imgUrl = groups[1].Value.Replace("_60x60q90.jpg", "").Replace("_50x50.jpg", "");
+                    datas.Add(imgUrl);
+                }
+                break;
+            }
+           return datas;
+        }
+        #endregion
         /// <summary>
         /// 校验是否合法参数
         /// </summary>

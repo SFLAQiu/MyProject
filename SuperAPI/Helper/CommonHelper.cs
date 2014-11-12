@@ -23,41 +23,7 @@ namespace Helper {
             }
             return resultStr;
         }
-        /// <summary>
-        /// 根据URL保存文件
-        /// </summary>
-        /// <param name="ImgUrl"></param>
-        /// <param name="savePath"></param>
-        /// <param name="num">文件名</param>
-        /// <returns></returns>
-        public static bool SaveFile(string ImgUrl,string savePath,int num) {
-            if (ImgUrl.IsNullOrWhiteSpace()) return false;
-            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
-            try {
-                using (var webClient = new WebClient()) {
-                    var uri = new Uri(ImgUrl);
-                    if (uri == null) return false;
-                    var fileName=Path.GetFileName(ImgUrl);
-                    var extension = Path.GetExtension(ImgUrl);
-                    if (extension.Contains("?")) {
-                        var eNum = extension.IndexOf("?");
-                        extension=extension.Substring(0, eNum);
-                    }
-                    byte[] imgByte = webClient.DownloadData(ImgUrl);
-                    if (imgByte == null || imgByte.Count() <= 0) return false;
-                    var ms = new MemoryStream(imgByte);
-                    if (ms == null) return false;
-                    string saveFilePath = savePath + num + extension;
-                    var newImg = System.Drawing.Image.FromStream(ms);
-                    if (newImg == null) return false;
-                    newImg.Save(saveFilePath);
-                    webClient.Dispose();
-                }
-            } catch {
-                return false;
-            }
-            return true;
-        }
+        
         /// <summary>
         /// 从图片地址下载图片到本地磁盘
         /// </summary>
