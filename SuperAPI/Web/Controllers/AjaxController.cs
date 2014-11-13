@@ -150,7 +150,10 @@ namespace Web.Controllers {
                 DownUrl = CommonConfig.SynthesisImgDownUrlPre.FormatStr(fileName)
             });
         }
-
+        /// <summary>
+        /// 生成视频(flash)
+        /// </summary>
+        /// <returns></returns>
         public ActionResult CreateVideo() {
 
             //校验并获取域名对应的操作对象
@@ -160,8 +163,6 @@ namespace Web.Controllers {
             if (checkMsg != null || hander == null) return checkMsg;
             var savePath=hander.GetSavePath(values["idStr"]);
             var urlPre = hander.GetUrl(values["idStr"]);
-            string msg;
-
             if (!Directory.Exists(savePath)) return WriteJson(new {
                 Code = "101",
                 Msg = "不存在商品图片路径！"
@@ -177,30 +178,17 @@ namespace Web.Controllers {
                 do {
                     i++;
                     lis.Add(item);
-                } while (i < 6);
+                } while (i < 20);
             }
-         
             var videoSavePath = Request.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd")));
             if (!Directory.Exists(videoSavePath)) Directory.CreateDirectory(videoSavePath);
-            var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".avi";
+            var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".swf";
             var videlFilePath = videoSavePath + fileName;
-            var videoDownUrl = CommonConfig.VideoDownUrlPre.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd"));
-            AVIWriter aviWriter = new AVIWriter();
-            //ps:avi中所有图像皆不能小于width及height
-            Bitmap avi_frame = aviWriter.Create(videlFilePath, 1, 500, 500);
-            //获得指定目录下文件列表的list
-            foreach (string filename in lis) {
-                //获得图像
-                Bitmap cache = new Bitmap(filename);
-                //由于转化为avi后呈现相反，所以翻转
-                cache.RotateFlip(RotateFlipType.Rotate180FlipX);
-                //载入图像
-                aviWriter.LoadFrame(cache);
-                aviWriter.AddFrame();
-            }
-            //释放资源
-            aviWriter.Close();
-            avi_frame.Dispose();
+            var videoDownUrl = CommonConfig.VideoDownUrlPre.FormatStr(fileName);
+            if (!CommonHelper.CreateSwf(lis, videlFilePath)) return WriteJson(new {
+                Code = "101",
+                Msg = "生成视频失败！"
+            });
             return WriteJson(new {
                 Code = "100",
                 Msg = "Bingo！",

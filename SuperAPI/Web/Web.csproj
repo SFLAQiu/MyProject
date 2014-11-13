@@ -46,6 +46,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SharedCode\LG.Utility\LG.Utility\LG.Utility\bin\Debug\LG.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="SharpZipLib">
+      <HintPath>..\Lib_Ref\SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

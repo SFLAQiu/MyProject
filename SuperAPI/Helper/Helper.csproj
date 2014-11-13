@@ -34,7 +34,13 @@
     <Reference Include="LG.Utility">
       <HintPath>..\Lib_Ref\LG.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Lib_Ref\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic.Compatibility.Data" />
+    <Reference Include="SwfDotNet.IO">
+      <HintPath>..\Lib_Ref\SwfDotNet.IO.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

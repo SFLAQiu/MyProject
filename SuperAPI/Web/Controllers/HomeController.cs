@@ -30,5 +30,17 @@ namespace Web.Controllers
             StaticFunctions.OutClientToDownFile(filePath, fileName);
             return Content("");
         }
+        /// <summary>
+        /// 下载swf
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DownVideo() {
+            var fileName = Request.GetQ("video");
+            if (fileName.IsNullOrWhiteSpace()) return WriteJson(new { Code = "101", Msg = "参数video不能为空！" });
+            var filePath = HttpContext.Server.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd"))) + fileName;
+            if (!new FileInfo(filePath).Exists) return WriteJson(new { Code = "101", Msg = "There is no picture！" });
+            StaticFunctions.OutClientToDownFile(filePath, fileName);
+            return Content("");
+        } 
     }
 }
