@@ -41,5 +41,9 @@ namespace Helper {
         /// 视频下载地址
         /// </summary>
         public const string VideoDownUrlPre = "/Home/DownVideo/?video={0}";
+        /// <summary>
+        /// 展示地址
+        /// </summary>
+        public const string VideoShowUrlPre = "/ItemImg/Video/{0}/";
     }
 }

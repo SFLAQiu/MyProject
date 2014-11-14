@@ -180,18 +180,21 @@ namespace Web.Controllers {
                     lis.Add(item);
                 } while (i < 20);
             }
-            var videoSavePath = Request.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd")));
+            var dateStr = DateTime.Now.Date.ToString("yyyy-MM-dd");
+            var videoSavePath = Request.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(dateStr));
             if (!Directory.Exists(videoSavePath)) Directory.CreateDirectory(videoSavePath);
             var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".swf";
             var videlFilePath = videoSavePath + fileName;
             var videoDownUrl = CommonConfig.VideoDownUrlPre.FormatStr(fileName);
-            if (!CommonHelper.CreateSwf(lis, videlFilePath)) return WriteJson(new {
+            var vieoShowUrl = CommonConfig.VideoShowUrlPre.FormatStr(dateStr) + fileName;
+            if (!CreateVideoHelper.CreateSwf(lis, videlFilePath)) return WriteJson(new {
                 Code = "101",
                 Msg = "生成视频失败！"
             });
             return WriteJson(new {
                 Code = "100",
                 Msg = "Bingo！",
+                ShowUrl = vieoShowUrl,
                 DownUrl=videoDownUrl
             });
         }
