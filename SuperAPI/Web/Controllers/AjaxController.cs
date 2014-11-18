@@ -99,6 +99,8 @@ namespace Web.Controllers {
             if (checkMsg != null || hander == null) return checkMsg;
             string mainImg = Request.GetF("bImg");//背景图
             string sImg = Request.GetF("sImg");//合成图
+            int wNum = Request.GetF("w").GetInt(0,false);
+            int hNum = Request.GetF("h").GetInt(0, false);
             int xNum = Request.GetF("x").GetInt(0,false) ;
             int yNum = Request.GetF("y").GetInt(0, false);
             if (mainImg.IsNullOrWhiteSpace() || sImg.IsNullOrWhiteSpace()) return WriteJson(new { 
@@ -116,11 +118,14 @@ namespace Web.Controllers {
                 Code = "101",
                 Msg = "背景图不存在！"
             });
-
-            Bitmap b_map_bg = new Bitmap(filePath);
+            var bgimg = Image.FromFile(filePath);
+            bgimg=bgimg.GetThumbnailImage(bgimg.Width, bgimg.Height, null, IntPtr.Zero);
+            Bitmap b_map_bg = new Bitmap(bgimg);
             Graphics gp_anise = Graphics.FromImage(b_map_bg);
             Point sImgPoint = new Point { X = xNum, Y = yNum };
-            gp_anise.DrawImage(Image.FromFile(sImgFilePath), sImgPoint);
+            var sImgage=Image.FromFile(sImgFilePath);
+            if (wNum > 0 && hNum > 0) sImgage.GetThumbnailImage(wNum, hNum, null, IntPtr.Zero);
+            gp_anise.DrawImage(sImgage, sImgPoint);
             
             byte[] imgData = null;
             using (MemoryStream ms = new MemoryStream()) {
@@ -131,6 +136,8 @@ namespace Web.Controllers {
             }
             gp_anise.Dispose();
             b_map_bg.Dispose();
+            sImgage.Dispose();
+            bgimg.Dispose();
 
             var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".png";
             var path = HttpContext.Server.MapPath("~\\" + CommonConfig.SynthesisImgSavePath.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd")));
@@ -183,7 +190,7 @@ namespace Web.Controllers {
             var dateStr = DateTime.Now.Date.ToString("yyyy-MM-dd");
             var videoSavePath = Request.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(dateStr));
             if (!Directory.Exists(videoSavePath)) Directory.CreateDirectory(videoSavePath);
-            var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".swf";
+            var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".mp4";
             var videlFilePath = videoSavePath + fileName;
             var videoDownUrl = CommonConfig.VideoDownUrlPre.FormatStr(fileName);
             var vieoShowUrl = CommonConfig.VideoShowUrlPre.FormatStr(dateStr) + fileName;
@@ -241,7 +248,13 @@ namespace Web.Controllers {
                 var fileUrl = urlPre + fileName;
                 datas.Add(fileUrl);
             }
-            return datas.OrderBy(d => d).ToList();
+            return datas.OrderBy(delegate(string str) {
+                Regex r = new Regex(@"\/([^\/]+?)\.[^\/]+",RegexOptions.RightToLeft);
+                var match=r.Match(str);
+                if (match == null) return str.GetInt(0, false);
+                if (match.Groups == null || match.Groups.Count < 2) return str.GetInt(0, false);
+                return match.Groups[1].Value.GetInt(0,false);
+            }).ToList();
         }
 
         /// <summary>

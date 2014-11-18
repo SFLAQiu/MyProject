@@ -38,7 +38,7 @@ namespace Web.Controllers
             var fileName = Request.GetQ("video");
             if (fileName.IsNullOrWhiteSpace()) return WriteJson(new { Code = "101", Msg = "参数video不能为空！" });
             var filePath = HttpContext.Server.MapPath("~\\" + CommonConfig.VideoSavePath.FormatStr(DateTime.Now.Date.ToString("yyyy-MM-dd"))) + fileName;
-            if (!new FileInfo(filePath).Exists) return WriteJson(new { Code = "101", Msg = "There is no picture！" });
+            if (!new FileInfo(filePath).Exists) return WriteJson(new { Code = "101", Msg = "There is no video！" });
             StaticFunctions.OutClientToDownFile(filePath, fileName);
             return Content("");
         } 
