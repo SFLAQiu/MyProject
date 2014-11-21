@@ -225,7 +225,7 @@ namespace Web.Controllers {
             if (datas == null || datas.Count <= 0) return null;
             var i = 1;
             foreach (var imgUrl in datas) {
-                StaticFunctions.SaveFile(imgUrl, savePath, i.ToString());
+                StaticFunctions.SaveFile(imgUrl, savePath, i.ToString(),width:620);
                 i++;
             }
             rtnImgDatas = GetImgsByPath(savePath, urlPre);
