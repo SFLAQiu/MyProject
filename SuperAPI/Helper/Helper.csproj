@@ -55,6 +55,8 @@
     <Compile Include="CommonConfig.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="AVIWriter.cs" />
+    <Compile Include="HttpAjax.cs" />
+    <Compile Include="HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

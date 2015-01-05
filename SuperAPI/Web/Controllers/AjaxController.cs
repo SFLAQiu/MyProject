@@ -11,8 +11,10 @@ using System.IO;
 using System.Collections;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Text;
+using System.Net;
 namespace Web.Controllers {
-    public class AjaxController : Base {
+    public partial class AjaxController : Base {
         public ActionResult Index() {
             return Content(" What ？");
         }
@@ -27,13 +29,13 @@ namespace Web.Controllers {
             Dictionary<string, string> values;
             var checkMsg = DoCheck(out hander, out values);
             if (checkMsg != null || hander == null) return checkMsg;
-          
+
             //获取商品对应的保存地址
             var savePath = hander.GetSavePath(values["idStr"]);
-            var urlPre=hander.GetUrl(values["idStr"]);
+            var urlPre = hander.GetUrl(values["idStr"]);
             string msg;
             var rtnImgDatas = GetImgSelfUrls(values["url"], savePath, urlPre, hander, out msg);
-            if (rtnImgDatas == null || rtnImgDatas.Count<=0) return WriteJson(new {
+            if (rtnImgDatas == null || rtnImgDatas.Count <= 0) return WriteJson(new {
                 Code = "101",
                 Msg = msg
             });
@@ -43,7 +45,7 @@ namespace Web.Controllers {
                 Datas = rtnImgDatas
             });
         }
-        
+
         /// <summary>
         /// 写入压缩包
         /// </summary>
@@ -56,13 +58,13 @@ namespace Web.Controllers {
             if (checkMsg != null || hander == null) return checkMsg;
             string imgsStr = Request.GetF("imgs");
             var zipImgs = imgsStr.ToSplitList<string>(',');
-            if (imgsStr.IsNullOrWhiteSpace() ||zipImgs == null || zipImgs.Count <= 0) return WriteJson(new {
+            if (imgsStr.IsNullOrWhiteSpace() || zipImgs == null || zipImgs.Count <= 0) return WriteJson(new {
                 Code = "101",
-                Msg = "需要下载哪些图？！" 
+                Msg = "需要下载哪些图？！"
             });
             var fileName = (Guid.NewGuid() + DateTime.Now.GetTimestamp().ToString()).MD5() + ".zip";
-            var saveZipFilePath=Server.MapPath("~\\"+CommonConfig.ZipSavePath.FormatStr(DateTime.Now.Date.ToString("yyy-MM-dd")))+fileName;
-            var zipUrl=CommonConfig.ZipUrlPre.FormatStr(DateTime.Now.Date.ToString("yyy-MM-dd"))+fileName;
+            var saveZipFilePath = Server.MapPath("~\\" + CommonConfig.ZipSavePath.FormatStr(DateTime.Now.Date.ToString("yyy-MM-dd"))) + fileName;
+            var zipUrl = CommonConfig.ZipUrlPre.FormatStr(DateTime.Now.Date.ToString("yyy-MM-dd")) + fileName;
             var filePaths = new List<string>();
             //获取需要下载的文件集合
             foreach (var item in zipImgs) {
@@ -75,18 +77,17 @@ namespace Web.Controllers {
             try {
                 ZipHelper.CommpressDirByFiles(saveZipFilePath, filePaths.ToArray(), false, false);
             } catch (Exception ex) {
-                return WriteJson(new { 
+                return WriteJson(new {
                     Code = "101",
-                    Msg = ex.Message 
+                    Msg = ex.Message
                 });
             }
             return WriteJson(new {
-                Code = "100", 
+                Code = "100",
                 Msg = "Bingo",
-                DownUrl=zipUrl 
+                DownUrl = zipUrl
             });
         }
-        #endregion
         /// <summary>
         /// 合成图片
         /// </summary>
@@ -99,13 +100,13 @@ namespace Web.Controllers {
             if (checkMsg != null || hander == null) return checkMsg;
             string mainImg = Request.GetF("bImg");//背景图
             string sImg = Request.GetF("sImg");//合成图
-            int wNum = Request.GetF("w").GetInt(0,false);
+            int wNum = Request.GetF("w").GetInt(0, false);
             int hNum = Request.GetF("h").GetInt(0, false);
-            int xNum = Request.GetF("x").GetInt(0,false) ;
+            int xNum = Request.GetF("x").GetInt(0, false);
             int yNum = Request.GetF("y").GetInt(0, false);
-            if (mainImg.IsNullOrWhiteSpace() || sImg.IsNullOrWhiteSpace()) return WriteJson(new { 
-                Code="101",
-                Msg="缺少参数"
+            if (mainImg.IsNullOrWhiteSpace() || sImg.IsNullOrWhiteSpace()) return WriteJson(new {
+                Code = "101",
+                Msg = "缺少参数"
             });
             var sImgFilePath = Server.MapPath("~\\" + CommonConfig.SynthesisImgPath) + sImg;
             var filePath = hander.GetSavePath(values["idStr"]) + mainImg;
@@ -119,14 +120,14 @@ namespace Web.Controllers {
                 Msg = "背景图不存在！"
             });
             var bgimg = Image.FromFile(filePath);
-            bgimg=bgimg.GetThumbnailImage(bgimg.Width, bgimg.Height, null, IntPtr.Zero);
+            bgimg = bgimg.GetThumbnailImage(bgimg.Width, bgimg.Height, null, IntPtr.Zero);
             Bitmap b_map_bg = new Bitmap(bgimg);
             Graphics gp_anise = Graphics.FromImage(b_map_bg);
             Point sImgPoint = new Point { X = xNum, Y = yNum };
-            var sImgage=Image.FromFile(sImgFilePath);
+            var sImgage = Image.FromFile(sImgFilePath);
             if (wNum > 0 && hNum > 0) sImgage.GetThumbnailImage(wNum, hNum, null, IntPtr.Zero);
             gp_anise.DrawImage(sImgage, sImgPoint);
-            
+
             byte[] imgData = null;
             using (MemoryStream ms = new MemoryStream()) {
                 b_map_bg.Save(ms, ImageFormat.Png);
@@ -145,7 +146,7 @@ namespace Web.Controllers {
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             try {
                 StaticFunctions.ByteToImg(imgData).Save(synthesisImgfilePath);
-            }catch{
+            } catch {
                 return WriteJson(new {
                     Code = "101",
                     Msg = "生成图片失败！"
@@ -168,7 +169,7 @@ namespace Web.Controllers {
             Dictionary<string, string> values;
             var checkMsg = DoCheck(out hander, out values);
             if (checkMsg != null || hander == null) return checkMsg;
-            var savePath=hander.GetSavePath(values["idStr"]);
+            var savePath = hander.GetSavePath(values["idStr"]);
             var urlPre = hander.GetUrl(values["idStr"]);
             if (!Directory.Exists(savePath)) return WriteJson(new {
                 Code = "101",
@@ -202,11 +203,11 @@ namespace Web.Controllers {
                 Code = "100",
                 Msg = "Bingo！",
                 ShowUrl = vieoShowUrl,
-                DownUrl=videoDownUrl
+                DownUrl = videoDownUrl
             });
         }
-         
 
+        #endregion
         #region "辅助"
         /// <summary>
         /// 获取图片url地址集合
@@ -216,7 +217,7 @@ namespace Web.Controllers {
         /// <param name="urlPre"></param>
         /// <param name="hander"></param>
         /// <returns></returns>
-        private List<string> GetImgSelfUrls(string url,string savePath,string urlPre, HostDo hander,out string msg) {
+        private List<string> GetImgSelfUrls(string url, string savePath, string urlPre, HostDo hander, out string msg) {
             msg = string.Empty;
             //获取保存地址的下载图片是否存在，如果存在就不再进行下载
             var rtnImgDatas = GetImgsByPath(savePath, urlPre);
@@ -225,7 +226,7 @@ namespace Web.Controllers {
             if (datas == null || datas.Count <= 0) return null;
             var i = 1;
             foreach (var imgUrl in datas) {
-                StaticFunctions.SaveFile(imgUrl, savePath, i.ToString(),width:620);
+                StaticFunctions.SaveFile(imgUrl, savePath, i.ToString(), width: 620);
                 i++;
             }
             rtnImgDatas = GetImgsByPath(savePath, urlPre);
@@ -249,11 +250,11 @@ namespace Web.Controllers {
                 datas.Add(fileUrl);
             }
             return datas.OrderBy(delegate(string str) {
-                Regex r = new Regex(@"\/([^\/]+?)\.[^\/]+",RegexOptions.RightToLeft);
-                var match=r.Match(str);
+                Regex r = new Regex(@"\/([^\/]+?)\.[^\/]+", RegexOptions.RightToLeft);
+                var match = r.Match(str);
                 if (match == null) return str.GetInt(0, false);
                 if (match.Groups == null || match.Groups.Count < 2) return str.GetInt(0, false);
-                return match.Groups[1].Value.GetInt(0,false);
+                return match.Groups[1].Value.GetInt(0, false);
             }).ToList();
         }
 
