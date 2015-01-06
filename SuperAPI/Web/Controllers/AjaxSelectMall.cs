@@ -21,19 +21,24 @@ namespace Web.Controllers {
         /// </summary>
         /// <returns></returns>
         public ActionResult MallKeywordRanking(){
-            var responseContent = HttpAjax.GetHttpContent(RequestType.POST, "http://tool.58pic.com/search/index.php?a=grabInfo", GetLoginCookie(), null,
-            new Dictionary<string, string> { 
-                {"account","%E4%BA%94%E5%8D%83%E9%94%A6%E7%BB%A3%E6%97%97%E8%88%B0%E5%BA%97"},//淘宝账号
-                {"keyword","%E4%BA%94%E5%8D%83%E9%94%A6%E7%BB%A3%E6%97%97%E8%88%B0%E5%BA%97"},//宝贝关键词
-                {"sort","default"},//排序方式
-                {"maxpage","1"},//排名
-                {"curpage","1"}//排名
-            });
+            var sortType=Request.GetQ("sortType");//排序类别
+            var account = Request.GetQ("account");//淘宝帐号
+            var key = Request.GetQ("key");//关键词
+            var type = Request.GetQ("type").GetInt(0,false);
+            var nowPage = Request.GetQ("nowPage").GetInt(0);
+
+            var url="http://www.aidian123.com/ajax/top/taobao/?sortType={0}&account={1}&key={2}&type={3}&nowPage={4}&dt="+DateTime.Now.GetTimestamp();
+            url=url.FormatStr(sortType,account,key,type,nowPage);
+            var responseContent=HttpAjax.GetHttpContent(
+                RequestType.GET,
+                url,
+                null,
+                null,
+                null,
+                timeoutMillisecond:60000
+            );
             return Content(responseContent, "text/html",Encoding.UTF8);
         }
-
-
-
         /// <summary>
         /// 动态获取商家信息（http://tool.58pic.com/dynamic/）
         /// </summary>
@@ -41,7 +46,7 @@ namespace Web.Controllers {
         public ActionResult DynamicPingJia() {
             string a = Request.GetQ("a");
             string m = Request.GetQ("m");
-            string requestUrl = @"http://tool.58pic.com/dynamic/?m={0}&a={1}".FormatStr(a, m);
+            string requestUrl = @"http://tool.58pic.com/dynamic/?m={0}&a={1}".FormatStr(m,a);
             var responseContent = string.Empty;
             switch (a) {
                 case "search": responseContent = GetRequestPingJiaContent(requestUrl); break;
@@ -49,8 +54,51 @@ namespace Web.Controllers {
             }
             return Content(responseContent, "text/html", Encoding.UTF8);
         }
+
+        /// <summary>
+        /// 淘宝信用查询
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult TaoBaoInfoGrab() {
+            string a = Request.GetQ("a");
+            string m = Request.GetQ("m");
+            string requestUrl = (@"http://tool.58pic.com/credit/index.php?m={0}&a={1}&dt="+DateTime.Now.GetDateTimeFormats()).FormatStr(m, a);
+            var responseContent = string.Empty;
+            switch (a) {
+                case "doGrabCredit": responseContent = GetDoGrabCreditContent(requestUrl); break;
+            }
+            return Content(responseContent, "text/json", Encoding.UTF8);
+        }
+
+
         #endregion
+        
+
+
+
         #region "千图网辅助"
+        /// <summary>
+        /// 获取掌柜信息
+        /// </summary>
+        /// <param name="requestUrl"></param>
+        /// <returns></returns>
+        private string GetDoGrabCreditContent(string requestUrl) {
+#if DEBUG
+            string nick = Request.GetQ("nick");//掌柜名
+#else
+            string nick = Request.GetF("nick");
+#endif
+            return HttpAjax.GetHttpContent(
+               RequestType.POST,
+               requestUrl,
+               GetLoginCookie(),
+               null,
+               new Dictionary<string, string> { 
+                    {"nick",nick}
+                },
+               timeoutMillisecond: 60000
+           );
+        }
         /// <summary>
         /// 获取评价数据
         /// </summary>
@@ -69,7 +117,8 @@ namespace Web.Controllers {
                 null,
                 new Dictionary<string, string> { 
                     {"searchname",searchname}
-                }
+                },
+                timeoutMillisecond: 60000
             );
         }
 
@@ -94,7 +143,8 @@ namespace Web.Controllers {
                 new Dictionary<string, string> { 
                     {"url",url},
                     {"num",num}
-                }
+                },
+                timeoutMillisecond:60000
             );
         }
         /// <summary>
@@ -134,5 +184,6 @@ namespace Web.Controllers {
             return cookies;
         }
         #endregion
+
     }
 }

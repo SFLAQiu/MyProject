@@ -16,28 +16,43 @@ namespace Helper {
         /// <param name="responseCookies"></param>
         /// <param name="requestParames"></param>
         /// <returns></returns>
-        public static string GetHttpContent(RequestType eType,string url,CookieCollection requestCookies,CookieCollection responseCookies,IDictionary<string, string> requestParames) {
-            var rtnStr=string.Empty;
-            switch(eType){
+        public static string GetHttpContent(RequestType eType, string url, CookieCollection requestCookies, CookieCollection responseCookies, IDictionary<string, string> requestParames, int timeoutMillisecond = 3000) {
+            var rtnStr = string.Empty;
+            switch (eType) {
                 case RequestType.GET: {
-                    if (requestParames != null || requestParames.Count>0) {
-                        StringBuilder paramesStr = new StringBuilder();
-                        var i = 0;
-                        var countNum = requestParames.Count;
-                        foreach (var item in requestParames) {
-                            var key=item.Key;
-                            if(key.IsNullOrWhiteSpace())continue;
-                            paramesStr.Append(key + "=" + item.Value);
-                            if (i < (countNum - 1)) paramesStr.Append("&");
-                            i++;
+                        if (requestParames != null && requestParames.Count > 0) {
+                            StringBuilder paramesStr = new StringBuilder();
+                            var i = 0;
+                            var countNum = requestParames.Count;
+                            foreach (var item in requestParames) {
+                                var key = item.Key;
+                                if (key.IsNullOrWhiteSpace()) continue;
+                                paramesStr.Append(key + "=" + item.Value);
+                                if (i < (countNum - 1)) paramesStr.Append("&");
+                                i++;
+                            }
                         }
-                    }
-                    rtnStr= HttpAccessHelper.GetHttpGetResponseText(url,Encoding.UTF8,3000,requestCookies,out responseCookies);
-                };break;
+                        try {
+                            var postFn = new Func<string>(delegate() {
+                                return  HttpAccessHelper.GetHttpGetResponseText(url, Encoding.UTF8, timeoutMillisecond, requestCookies, out responseCookies);
+                            });
+                            rtnStr =postFn.Invoke();
+                            if (rtnStr.IsNullOrWhiteSpace()) rtnStr = postFn.Invoke();
+                            if (rtnStr.IsNullOrWhiteSpace()) rtnStr = postFn.Invoke();
+                        } catch { }
+                    }; break;
                 case RequestType.POST: {
-                    rtnStr = HttpAccessHelper.GetHttpPostResponseText(url, requestParames, null, null, false, Encoding.GetEncoding("utf-8"), 300000, requestCookies, out responseCookies);
-                };break;
+                        try {
+                            var postFn = new Func<string>(delegate() {
+                                return HttpAccessHelper.GetHttpPostResponseText(url, requestParames, null, null, false, Encoding.GetEncoding("utf-8"), timeoutMillisecond, requestCookies, out responseCookies);
+                            });
+                            rtnStr = postFn();
+                            if (rtnStr.IsNullOrWhiteSpace()) rtnStr = postFn();
+                            if (rtnStr.IsNullOrWhiteSpace()) rtnStr = postFn();
+                        } catch { }
+                    }; break;
             }
+
             return rtnStr;
         }
     }
